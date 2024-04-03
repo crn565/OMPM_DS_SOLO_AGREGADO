@@ -1,4 +1,3 @@
-## OMPM_DS_SOLO_AGREGADO ##
 
 # Desagregación del consumo energetico  partiendo  de un modelo ya entrenado contra un Dataset que contiene sólo el Agregado #
 
