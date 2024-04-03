@@ -1,6 +1,6 @@
 ## OMPM_DS_SOLO_AGREGADO ##
 
-# Desagregación del consumo energetico  partiendo  de un modelo ya entrenado contra un Dataset que contiene sólo del Agregado #
+# Desagregación del consumo energetico  partiendo  de un modelo ya entrenado contra un Dataset que contiene sólo el Agregado #
 
 En este  proyecto  se  genera un modelo  partiendo de datos de medidas del OMPM. Posteriormente  usando ese modelo ya entrenado (cuadernos 1 al 7) , partiendo de este  se trata de desagregar la demanda partiendo unicamente de un dataset qeu solo contiene las medidas del agregado 
 El ultimo cuaderno, que es el mas interesante muestra el uso de siteonlyapi, una nueva interfaz de NILMTK que es una modificación de ExperimentAPI de NILMTK y que permite a los usuarios de NILMTK obtener las demandas de energía de sus hogares/edificios para diferentes electrodomésticos potenciales partiendo de un conjunto de datos ya entrenado.
