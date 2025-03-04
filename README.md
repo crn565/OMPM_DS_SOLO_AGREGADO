@@ -1,13 +1,12 @@
+**Disaggregation of energy consumption from a trained model against a Dataset containing only the Aggregate.**
 
-# Desagregación del consumo energetico  partiendo  de un modelo ya entrenado contra un Dataset que contiene sólo el Agregado #
-
-En este  proyecto  se  genera un modelo  partiendo de datos de medidas del OMPM. Posteriormente  usando ese modelo ya entrenado (cuadernos 1 al 7) , partiendo de este  se trata de desagregar la demanda partiendo unicamente de un dataset qeu solo contiene las medidas del agregado 
-El ultimo cuaderno, que es el mas interesante muestra el uso de siteonlyapi, una nueva interfaz de NILMTK que es una modificación de ExperimentAPI de NILMTK y que permite a los usuarios de NILMTK obtener las demandas de energía de sus hogares/edificios para diferentes electrodomésticos potenciales partiendo de un conjunto de datos ya entrenado.
+In this project, a model is generated based on data from the OMPM measures. Subsequently, using this trained model (workbooks 1 to 7), we try to disaggregate the demand using only a dataset containing only the aggregate measures.
+The last booklet, which is the most interesting one, shows the use of siteonlyapi, a new NILMTK interface which is a modification of ExperimentAPI of NILMTK and which allows NILMTK users to obtain the energy demands of their homes/buildings for different potential appliances starting from a trained dataset.
 
 
-Comencemos con los datos deL OMPM  para demostrar el uso de esta API. Este experimento muestra cómo el usuario puede convertir los datos de su medidor en el formato DSUAL adecuado y llamar a la API para desagregar la energía en demandas de electrodomésticos en función del conjunto de entrenamiento. Se convierten los datos del medidor al formato adecuado. Asimismo cambiamos las fechas de inicio y finalización de su conjunto de datos de prueba y también, ingresamos los valores de los diferentes parámetros en el diccionario. Dado que necesitamos varios electrodomésticos, ingresamos los nombres de todos los electrodomésticos requeridos en el parámetro 'appliances'. También mencionamos site_only es cierto porque queremos desagregar los datos del medidor del sitio solo sin ninguna comparación con los datos del submedidor.
+Let's start with the OMPM data to demonstrate the use of this API. This experiment shows how the user can convert his meter data into the appropriate DSUAL format and call the API to disaggregate energy into appliance demands based on the training set. The meter data is converted to the appropriate format. We also change the start and end dates of your test data set and also enter the values of the different parameters in the dictionary. Since we need several appliances, we enter the names of all required appliances in the parameter 'appliances'. We also mention site_only is true because we want to disaggregate the site meter data only without any comparison with the sub-meter data.
 
-Es crucial pues  como se tipifica los aplicativos,los metodos y los conjuntos de datos,  el cual a continuacion  podemos  ver a continuación:
+It is therefore crucial how applications, methods and datasets are typified, which we can see below:
 
 
 experiment1 = {
@@ -80,83 +79,90 @@ experiment1 = {
 
 }
 
-## Explicacion del código ##
-
-El código proporcionado inicializa un objeto de **API** mediante la configuración del experimento proporcionada. A continuación, se muestra un desglose de la configuración del experimento
-
-- **Especificación de alimentación:** La alimentación de la red y del aparato se especifica como potencia "activa".
-- **Frecuencia de muestreo:** La frecuencia de muestreo se establece en 60 segundos.
-- **Dispositivos:**  El experimento incluye dispositivos con identificadores 2, 3, 4, 5 y 6. 
-- **Métodos/Algoritmos:** Se utilizan cuatro algoritmos NILM: CO, FHMM, Mean y Hart. 
-- **Modo solo de sitio:** Este modo está habilitado (site_only=True), lo que significa que solo se tiene en cuenta la potencia agregada a nivel de sitio para el entrenamiento y las pruebas. 
-- **Conjunto de datos de entrenamiento:**  El conjunto de datos de entrenamiento procede del conjunto de datos 'DSUAL', almacenado en el archivo 'ualm2.h5'. Se utilizan datos del edificio 1, a partir de '2023-02-24 14:47:10' y hasta '2023-02-24 20:03:54'. 
-- **Conjunto de datos de prueba:**  El conjunto de datos de prueba proviene del conjunto de datos 'DSUAL', almacenado en el archivo 'ualm3.h5'. Se utilizan los datos del edificio 1, a partir de '2023-05-13 17:22:02' y hasta '2023-05-13 23:43:15'. 
-- **Métrica de evaluación:** Se elige RMSE (error cuadrático medio) como métrica de evaluación.
+**Explanation of the code**
 
 
-El objeto de API instanciado con esta configuración llevará a cabo el experimento NILM utilizando los algoritmos y conjuntos de datos especificados, y evaluará su rendimiento mediante RMSE
+The provided code initialises an **API object** using the provided experiment configuration. A breakdown of the experiment configuration is shown below.
 
 
-Cuando se llama api_results_experiment_1 = API(experiment1) con el contenido de experiment1, se llaman las siguientes funciones de la clase API:
-1.	**Constructor (__init__):**
-•	Se inicializan los atributos de la clase API con los parámetros proporcionados en experiment1.
-•	Se llama al método experiment para iniciar el experimento.
-2.	**Método experiment:**
-•	Este método es llamado por el constructor.
-•	Se iteran los clasificadores (métodos/algoritmos) especificados en experiment1['methods'].
-•	Dependiendo de si la opción de entrenamiento por fragmentos está habilitada o no, se llaman a los métodos train_chunk_wise o train_jointly para entrenar los clasificadores.
-•	Después del entrenamiento, se realizan pruebas ya sea por fragmentos o conjuntamente llamando a los métodos test_chunk_wise o test_jointly.
-3.	**Métodos de Entrenamiento y Prueba:**
-•	Se llaman los métodos de entrenamiento train_chunk_wise o train_jointly dependiendo de si el entrenamiento se realiza por fragmentos o conjuntamente.
-•	Se llaman los métodos de prueba test_chunk_wise o test_jointly dependiendo de si las pruebas se realizan por fragmentos o conjuntamente.
-4.	**Otros Métodos Auxiliares:**
-•	Los métodos auxiliares como dropna, store_classifier_instances, call_predict, predict, y compute_loss pueden ser llamados indirectamente dentro de otros métodos mencionados anteriormente, dependiendo de la lógica de la implementación y el flujo de ejecución.
-En resumen, cuando se llama **API(experiment1)**, se ejecutan una serie de métodos dentro de la clase **API** para realizar el experimento de desagregación de energía
+-Power specification:** Mains and device power is specified as "active" power.
+-Sampling frequency:** The sampling frequency is set to 60 seconds.
+-Devices:** The experiment includes devices with identifiers 2, 3, 4, 5 and 6.
+-Methods/Algorithms:** Four NILM algorithms are used: CO, FHMM, Mean and Hart. 
+-Site-only mode:** This mode is enabled (site_only=True), which means that only the aggregated power at site level is taken into account for training and testing.
+-Training dataset:** The training dataset is taken from the 'DSUAL' dataset, stored in the file 'ualm2.h5'. Data from building 1 is used, starting from '2023-02-24 14:47:10' and up to '2023-02-24 20:03:54'.
+-Test data set:** The test data set comes from the data set 'DSUAL', stored in the file 'ualm3.h5'. The data from building 1, starting from '2023-05-13 17:22:02' and up to '2023-05-13 23:43:15' is used.
+-Evaluation metric:** RMSE (root mean square error) is chosen as the evaluation metric.
+
+
+The API object instantiated with this configuration will perform the NILM experiment using the specified algorithms and datasets, and evaluate its performance using RMSE
+
+
+When api_results_experiment_1 = API(experiment1) is called with the contents of experiment1, the following API class functions are called:
+1.**constructor (__init__):**
+- The attributes of the API class are initialised with the parameters provided in experiment1.
+- The experiment method is called to start the experiment.
+2.**experiment method:**
+- This method is called by the constructor.
+- The classifiers (methods/algorithms) specified in experiment1['methods'] are iterated.
+- Depending on whether the chunk training option is enabled or not, the train_chunk_wise or train_jointly methods are called to train the classifiers.
+- After training, tests are performed either in chunks or together by calling the test_chunk_wise or test_jointly methods.
+3.**Training and Testing Methods:** **Training and Testing Methods
+- The training methods are called train_chunk_wise or train_jointly depending on whether training is done in chunks or together.
+- The test methods test_chunk_wise or test_jointly are called depending on whether testing is done in chunks or together.
+4.**Other Ancillary Methods:**
+- Auxiliary methods such as dropna, store_classifier_instances, call_predict, predict, and compute_loss can be called indirectly within other methods mentioned above, depending on the implementation logic and execution flow.
+In summary, when **API(experiment1)** is called, a number of methods within the **API** class are executed to perform the energy disaggregation experiment.
 
 
 
 
 
-## CONTENIDO DE LA API ##
 
-Esta es una clase de Python llamada API diseñada para experimentos de NILM (Monitoreo de Cargas No Intrusivo). Te permite entrenar y probar varios algoritmos de desagregación en un conjunto de datos de lecturas de electricidad de edificios.
+## API CONTENT ##
 
-Aquí tienes un desglose de la clase:
+
+This is a Python class called API designed for NILM (Non Intrusive Load Monitoring) experiments. It allows you to train and test various disaggregation algorithms on a dataset of building electricity readings.
+
+Here is a breakdown of the class:
 
 
 **Initialization:**
 
-- \_\_init\_\_(self, params): Esta función inicializa la clase con parámetros como electrodomésticos, conjuntos de datos, métodos de entrenamiento, etc.
+- \_\_init\_\_(self, params): This function initialises the class with parameters like appliances, data sets, training methods, etc.
 
 **Experiment Functions:**
 
-- experiment(self): Esta función llama a las funcionalidades de entrenamiento y prueba.. 
-  - train\_chunk\_wise(self, clf, d, current\_epoch): Esta función entrena los clasificadores de manera fragmentada para una mejor gestión de la memoria..
-  - test\_chunk\_wise(self, d): Esta función prueba los clasificadores de manera fragmentada..
-  - train\_jointly(self, clf, d): .Esta función entrena los clasificadores en todo el conjunto de datos de manera conjunta.
-  - test\_jointly(self, d): Esta función prueba los clasificadores en todo el conjunto de datos de manera conjunta.
+
+- experiment (self): This function calls the training and testing functionalities....
+- train\_chunk\_wise (self, clf, d, current\_epoch): This function trains the classifiers in a piecewise manner for better memory management...
+- test\_chunk\_wise (self, d): This function tests the classifiers in a fragmented way...
+- train\_jointly (self, clf, d): This function trains the classifiers on the entire dataset in a joint manner.
+- test\_jointly (self, d): This function tests the classifiers on the entire dataset jointly.
 **Data Handling Functions:**
 
-- dropna(self, mains\_df, appliance\_dfs=[]): Esta función elimina las filas con valores faltantes de los marcos de datos de la corriente principal y de los electrodomésticos, manteniendo la consistencia.
+- dropna(self, mains\_df, appliance\_dfs=[]):This function removes rows with missing values from the main stream and appliance data frames, maintaining consistency.
 **Model Handling Functions:**
 
-- store\_classifier\_instances(self): Esta función inicializa los modelos basados en los métodos especificados.
+- store\_classifier\_instances(self):This function initialises the models based on the specified methods.
 **Prediction and Evaluation Functions:**
 
-- call\_predict(self, classifiers, timezone): Esta función calcula predicciones en los datos de prueba utilizando todos los modelos y los compara utilizando métricas especificadas.
-- predict(self, clf, test\_elec, test\_submeters, sample\_period, timezone ): Esta función genera predicciones para un clasificador específico en el conjunto de datos de prueba.
-- compute\_loss(self,gt,clf\_pred, loss\_function): Esta función calcula la pérdida (error) entre la verdad fundamental y las predicciones para cada electrodoméstico.
+- call\_predict (self, classifiers, timezone): This function calculates predictions on the test data using all models and compares them using specified metrics.
+- predict (self, clf, test_elec, test_submeters, sample_period, timezone ): This function generates predictions for a specific classifier in the test data set.
+- compute\_loss (self,gt,clf\_pred, loss\_function): This function computes the loss (error) between the ground truth and the predictions for each appliance.
 
 **Other Functions:**
 
-- display\_predictions(self): Esta función traza la verdad fundamental y el consumo de energía predicho para cada electrodoméstico.
+
+- display\_predictions (self): This function plots the ground truth and predicted energy consumption for each appliance.
 
 
 
 
 
 
-## Código Python ##
+
+**Python code**
 
 
 From nilmtk.dataset import DataSet
