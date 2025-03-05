@@ -1,5 +1,6 @@
-**Disaggregation of energy consumption from a trained model against a Dataset containing only the Aggregate.**
-
+#
+# Disaggregation of energy consumption from a trained model against a Dataset containing only the Aggregate.**
+#
 In this project, a model is generated based on data from the OMPM measures. Subsequently, using this trained model (workbooks 1 to 7), we try to disaggregate the demand using only a dataset containing only the aggregate measures.
 The last booklet, which is the most interesting one, shows the use of siteonlyapi, a new NILMTK interface which is a modification of ExperimentAPI of NILMTK and which allows NILMTK users to obtain the energy demands of their homes/buildings for different potential appliances starting from a trained dataset.
 
